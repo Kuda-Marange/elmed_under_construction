@@ -51,14 +51,18 @@
   })();
 
   // ---- Countdown Timer ----
-  const launchDate = new Date();
-  launchDate.setDate(launchDate.getDate() + 60);
-  launchDate.setHours(0, 0, 0, 0);
+  // FIX: launchDate is now a FIXED date instead of "today + 60 days"
+  // (previously it recalculated on every page load, so the countdown
+  // never actually counted down — it just reset to ~60 days each visit).
+  // Set this to your real launch date/time.
+  const launchDate = new Date("2026-09-04T00:00:00");
 
   const countdownDays = document.getElementById("countdown-days");
   const countdownHours = document.getElementById("countdown-hours");
   const countdownMinutes = document.getElementById("countdown-minutes");
   const countdownSeconds = document.getElementById("countdown-seconds");
+
+  let countdownInterval;
 
   function updateCountdown() {
     const now = new Date();
@@ -67,6 +71,7 @@
     if (diff <= 0) {
       const countdownEl = document.getElementById("countdown");
       if (countdownEl) countdownEl.classList.add("hidden");
+      clearInterval(countdownInterval); // FIX: stop the timer once launch has passed
       return;
     }
 
@@ -82,7 +87,7 @@
   }
 
   updateCountdown();
-  setInterval(updateCountdown, 1000);
+  countdownInterval = setInterval(updateCountdown, 1000);
 
   // ---- Email Signup Form ----
   const form = document.getElementById("signup-form");
